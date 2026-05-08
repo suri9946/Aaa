@@ -1,0 +1,294 @@
+//Simulate to measure the light intensity using Tinkercad
+
+int sensorValue = 0;
+void setup()
+{
+pinMode (A0, INPUT);
+Serial.begin(9600);
+pinMode(9, OUTPUT);
+}
+void loop()
+{
+sensorValue = analogRead(A0);
+Serial.println(sensorValue);
+analogWrite(9, map(sensorValue,0,1023,0,255));
+delay(100);
+}
+
+
+
+
+
+//program 2
+const int triggerPin = 9;  // Arduino digital pin connected to the trigger pin of the simulated sensor
+const int echoPin = 10;    // Arduino digital pin connected to the echo pin of the simulated sensor
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  // Simulate the ultrasonic sensor by generating a distance value
+  int simulatedDistance = generateSimulatedDistance();
+
+  // Print the simulated distance value
+  Serial.print("Simulated Distance: ");
+  Serial.print(simulatedDistance);
+  Serial.println(" cm");
+
+  delay(1000);  // Wait for a moment before the next measurement
+}
+
+int generateSimulatedDistance() {
+  // Replace this function with your desired simulation logic
+  // In this example, a simple sine function is used
+  // You can modify this function to simulate different behaviors
+  return 50 + 50 * sin(millis() / 1000.0);  // Simulates a distance oscillating between 0 and 100 cm
+}
+
+
+// Simulate a DC motor with specified input that runs continuously and vary with the DC motor speed
+
+int MPin = 9;   //motor pin
+int Analog = A0;  // Analog Input
+int Ainp = 0; // Read analog input, initialized to zero   
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(MPin, OUTPUT);
+  pinMode(Analog, INPUT);
+}
+void loop()
+{
+Ainp = analogRead(A0);
+int Speed = map(Ainp, 0, 1024, 0, 255);
+delay(100);
+Serial.println(Speed);
+analogWrite(MPin, Speed);  
+            }
+
+
+//Simulate the Door Sensor for Smart Homes using IoT Sensor
+
+int doorSensor = 2;
+int buzzer = 8;
+
+void setup() {
+    pinMode(doorSensor, INPUT);
+    pinMode(buzzer, OUTPUT);
+    Serial.begin(9600);
+}
+
+void loop() {
+    int status = digitalRead(doorSensor);
+
+    if(status == HIGH) {
+        Serial.println("Door Opened");
+        digitalWrite(buzzer, HIGH);
+    }
+    else {
+        Serial.println("Door Closed");
+        digitalWrite(buzzer, LOW);
+    }
+
+    delay(1000);
+}
+
+//Write a Python Code for Tokenizing and Count Word Frequency
+
+
+from collections import Counter
+from nltk.tokenize import word_tokenize
+import nltk
+import nltk
+# Download tokenizer
+nltk.download('punkt')
+
+text = "Artificial Intelligence is changing the world. AI is powerful and useful."
+
+# Convert into tokens
+tokens = word_tokenize(text)
+
+print("Tokens:")
+print(tokens)
+
+# Convert to lowercase and filter words
+words = [word.lower() for word in tokens if word.isalpha()]
+
+# Count frequency
+frequency = Counter(words)
+
+print("\nWord Frequency:")
+for word, count in frequency.items():
+    print(word, ":", count)
+
+
+
+
+// Write a Python Code for NLTK Word Stemming and Lemmatizing using WordNet
+
+import nltk
+from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+
+# Download required datasets
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+# Sample words
+words = ["running", "flies", "studies", "playing"]
+
+# Create objects
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+print("Stemming Results:")
+
+for word in words:
+    print(word, "->", stemmer.stem(word))
+
+print("\nLemmatization Results:")
+
+for word in words:
+    print(word, "->", lemmatizer.lemmatize(word))
+
+
+
+// AI in Agriculture — Smart Irrigation Prediction
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+dataset = pd.read_csv("irrigation_dataset.csv")
+
+# Features and target
+X = dataset[['temperature', 'humidity', 'soil_moisture']]
+y = dataset['irrigation_needed']
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Prediction
+prediction = model.predict([[35, 60, 15]])
+
+print("Prediction:")
+if prediction[0] == 1:
+    print("Irrigation Needed")
+else:
+    print("No Irrigation Needed")
+
+# Accuracy
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+
+
+// Smart City — Street Light Prediction
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+# Load dataset
+dataset = pd.read_csv("streetlight_dataset.csv")
+
+X = dataset[['light_intensity', 'motion_detected']]
+y = dataset['light_status']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+prediction = model.predict([[15, 1]])
+
+if prediction[0] == 1:
+    print("Street Light ON")
+else:
+    print("Street Light OFF")
+
+
+
+
+
+// AI in Education — Course Recommendation
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
+
+# Load dataset
+dataset = pd.read_csv("course_dataset.csv")
+
+# Encoding
+le_interest = LabelEncoder()
+le_level = LabelEncoder()
+le_course = LabelEncoder()
+
+dataset['interest'] = le_interest.fit_transform(dataset['interest'])
+dataset['level'] = le_level.fit_transform(dataset['level'])
+dataset['course'] = le_course.fit_transform(dataset['course'])
+
+X = dataset[['interest', 'level']]
+y = dataset['course']
+
+# Train model
+model = DecisionTreeClassifier()
+model.fit(X, y)
+
+# Predict
+interest = le_interest.transform(['python'])
+level = le_level.transform(['beginner'])
+
+prediction = model.predict([[interest[0], level[0]]])
+
+print("Recommended Course:")
+print(le_course.inverse_transform(prediction)[0])
+
+
+
+// AI Healthcare — Disease Prediction
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+dataset = pd.read_csv("disease_dataset.csv")
+
+# Features and target
+X = dataset[['fever', 'cough', 'fatigue']]
+y = dataset['disease']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train model
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+# Predict disease
+prediction = model.predict([[1, 1, 1]])
+
+print("Predicted Disease:")
+print(prediction[0])
+
+# Accuracy
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
