@@ -1,0 +1,398 @@
+AEC
+Part A
+1)Simulate to measure the light intensity using Tinkercad
+
+
+
+int sensorValue = 0;
+void setup()
+{
+pinMode (A0, INPUT);
+Serial.begin(9600);
+pinMode(9, OUTPUT);
+}
+void loop()
+{
+sensorValue = analogRead(A0);
+Serial.println(sensorValue);
+analogWrite(9, map(sensorValue,0,1023,0,255));
+delay(100);
+}
+
+
+link:
+https://www.tinkercad.com/things/gYmeoPsz80l-light-intensity
+
+
+2) Simulate an ultrasonic distance sensor to detect the distance from the object
+
+                    
+
+long cm = 0;
+
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigger pin to HIGH state for 10 microseconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  // Reads the echo pin, and returns the sound wave travel time in microseconds *0.01723
+  return (pulseIn(echoPin, HIGH)*0.01723);
+  
+}
+
+void setup()
+{
+  Serial.begin(9600);
+
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+}
+
+void loop()
+{
+  cm = readUltrasonicDistance(7, 6);
+
+  Serial.print(cm);
+  Serial.println("cm");
+  
+  if (cm > 250) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(4, LOW);
+  }
+  if (cm <= 250 && cm > 175) {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, LOW);
+    digitalWrite(4, LOW);
+  }
+  if (cm <= 175 && cm > 100) {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    digitalWrite(4, LOW);
+  }
+  if (cm <= 100) {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    digitalWrite(4, HIGH);
+  }
+
+  delay(100); // Wait for 100 millisecond(s)
+}
+
+Link:
+https://www.tinkercad.com/things/5Y6hDvN8QgT-ultrasonic-distance-sensor
+3) Simulate a DC motor with specified input that runs continuously and vary with the DC motor speed.
+
+
+
+int MPin = 9;   //motor pin
+int Analog = A0;  // Analog Input
+int Ainp = 0; // Read analog input, initialized to zero   
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(MPin, OUTPUT);
+  pinMode(Analog, INPUT);
+}
+void loop()
+{
+Ainp = analogRead(A0);
+int Speed = map(Ainp, 0, 1024, 0, 255);
+delay(100);
+Serial.println(Speed);
+analogWrite(MPin, Speed);  
+            }
+
+Link:
+https://www.tinkercad.com/things/a1erhbKdSBQ-dc-motor?sharecode=s5AxJYfrzR3LpDJRrlGtK9va1ZjM4SeVFeEkMIrFG9g
+
+
+4) Simulate the door sensor for smart homes using IoT sensor
+
+
+
+
+
+#include <Servo.h>
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+int poson = 1  ;   // on position(!!YOU WILL HAVE TO SET IT BY TRY AND ERROR ACCORDING TO YOUR SETUP!!)
+int posoff =  100 ;  //off position(!!YOU WILL HAVE TO SET IT BY TRY AND ERROR ACCORDING TO YOUR SETUP!!)
+int pirPin = 7;    //the digital pin connected to the PIR sensor's output
+int ledPin = 13;
+int led2Pin=12;
+
+void setup() {
+  pinMode(pirPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(led2Pin,OUTPUT);
+  digitalWrite(pirPin, LOW);
+  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+ // delay(30000); //enough time for the sensor to calibrate
+}
+
+void loop() {
+ if(  digitalRead(pirPin) == HIGH        ) { 
+  
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(led2Pin,LOW);
+    myservo.write(45);              // tell servo to go to position in variable 'poson'
+    delay(5000);    
+    myservo.write(90);              // tell servo to go to position in variable 'posoff'
+    digitalWrite(ledPin, LOW);
+    digitalWrite(led2Pin,HIGH);
+    delay(1000);   //delay so it wont start right again imidately
+    digitalWrite(led2Pin,LOW);
+  
+}
+}
+
+Link:
+https://www.tinkercad.com/things/6Dz5LAuc7Q0-door-sensor?sharecode=_t0zbPxrNGb1hDrz0_wH86Z5SG_SNnKB5xbCbFk6XSA
+
+Part B
+AI in Agriculture - Smart Irrigation System
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x20,16,2);
+
+int enA=5, in1=3, in2=4;
+int tempPin=A1, moistPin=A0;
+
+void setup()
+{
+  lcd.init();
+  lcd.backlight();
+  
+  pinMode(enA,OUTPUT);
+  pinMode(in1,OUTPUT);
+  pinMode(in2,OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  float temp = (((analogRead(tempPin)*5.0)/1024)-0.5)*100;
+  float moist = (analogRead(moistPin)*5.0)/1024;
+
+  lcd.clear();
+
+  lcd.setCursor(0,0);
+  lcd.print("Temp:");
+  lcd.print(temp);
+
+  lcd.setCursor(0,1);
+  lcd.print("Moist:");
+  lcd.print(moist);
+
+  if(temp > 30 && moist < 4)
+  {
+    digitalWrite(in1,HIGH);
+    digitalWrite(in2,LOW);
+    analogWrite(enA,255);
+
+    Serial.println("Motor ON");
+  }
+  else
+  {
+    digitalWrite(in1,LOW);
+    digitalWrite(in2,LOW);
+    analogWrite(enA,0);
+
+    Serial.println("Motor OFF");
+  }
+
+  delay(1000);
+}
+link:
+https://www.tinkercad.com/things/aZhNG41jLck-copy-of-smart-irrigation-system?sharecode=UMs3WrYnmXLOKgrQQmegWatbF_CuKwvLdyGkIDRi-Qo
+
+2) AI in Smart Cities - Smart Street Lighting with Iot
+
+
+// Pin definitions
+const int ldrPin = A5;     // LDR connected to analog pin A0
+const int bulbPin = 3;     // Transistor base controlled by digital pin 9
+
+// Threshold for darkness (adjust based on your setup)
+int threshold = 500;
+
+void setup() {
+  pinMode(bulbPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int ldrValue = analogRead(ldrPin);   // Read LDR value
+  Serial.println(ldrValue);            // Print for debugging
+
+  if (ldrValue < threshold) {
+    digitalWrite(bulbPin, HIGH);       // Turn bulb ON
+  } else {
+    digitalWrite(bulbPin, LOW);        // Turn bulb OFF
+  }
+
+  delay(200); // Small delay for stability
+}
+
+Link:
+https://www.tinkercad.com/things/hNq5hOrV0Eh-street-light?sharecode=8joKtQweMD3AK4LGr5ukKHkrlDV-RXAh5yLpSUzsFAA
+
+//LAB-6 
+TOKENIZING AND COUNT WORD FREQUENCY
+//command -pip install nltk pandas matplotlib seaborn scikit-learn 
+
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
+text = "This is a sample text for word frequency counting"
+
+words = word_tokenize(text.lower())
+
+stop = set(stopwords.words("english"))
+
+words = [w for w in words if w.isalpha() and w not in stop]
+
+freq = {}
+
+for w in words:
+    freq[w] = freq.get(w,0) + 1
+
+print("Word Frequencies:")
+
+for w,f in freq.items():
+    print(w,":",f)
+
+
+//lab-7
+nltk word stemming and commatizing words using word net 
+//command - pip install nltk pandas matplotlib seaborn scikit-learn
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+text = "The quick brown foxes are jumping over the lazy dogs"
+
+words = word_tokenize(text.lower())
+
+words = [w for w in words if w not in stopwords.words('english')]
+
+ps = PorterStemmer()
+stemmed = [ps.stem(w) for w in words]
+
+lm = WordNetLemmatizer()
+lemmatized = [lm.lemmatize(w) for w in words]
+
+print("Original:", words)
+print("Stemmed:", stemmed)
+print("Lemmatized:", lemmatized)
+
+//lab 8 ai in education 
+//commands- pip install pandas scikit-learn
+//dataset name - Updated Resume Dataset
+
+
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report,accuracy_score
+
+# Load dataset
+data = pd.read_csv("UpdatedResumeDataSet.csv")
+
+# Input and output
+x = data["Resume"]
+y = data["Category"]
+
+# Convert text into vectors
+tfidf = TfidfVectorizer(stop_words='english')
+x = tfidf.fit_transform(x)
+
+print("Feature completed...")
+print(x.shape)
+
+# Split dataset
+x_train,x_test,y_train,y_test = train_test_split(
+    x,y,test_size=0.2,random_state=0
+)
+
+# Train model
+model = KNeighborsClassifier()
+model.fit(x_train,y_train)
+
+# Prediction
+pred = model.predict(x_test)
+
+# Accuracy
+print("Accuracy:",accuracy_score(y_test,pred))
+
+# Report
+print(classification_report(y_test,pred))
+
+//lab 9 ai in health care
+//command : pip install pandas matplotlib seaborn scikit-learn
+//kaggle dataset name : diabetes_binary_health_indicator (2021 or 2015)
+
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Load dataset
+data = pd.read_csv("diabetes_binary_health_indicators_BRFSS2021.csv")
+
+# Display dataset
+print(data.head())
+print(data.shape)
+
+# Remove missing values
+data = data.dropna()
+
+# Features and labels
+x = data.iloc[:,1:]
+y = data.iloc[:,0]
+
+# Split dataset
+x_train,x_test,y_train,y_test = train_test_split(
+    x,y,test_size=0.2,random_state=0
+)
+
+# Train model
+model = RandomForestClassifier(n_estimators=10)
+
+model.fit(x_train,y_train)
+
+# Prediction
+pred = model.predict(x_test)
+
+# Accuracy
+print("Accuracy:",accuracy_score(y_test,pred))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test,pred)
+
+print(cm)
+
+# Graph
+sns.heatmap(cm,annot=True,fmt='d')
+
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+
+plt.show()
+
